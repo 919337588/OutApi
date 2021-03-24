@@ -21,10 +21,10 @@ public class YouDao {
     public static HashMap<String, String> map=new HashMap<>();
     static Jedis jedis ;
     static {
-//        jedis = new Jedis("devkmos-inner.kaikeba.com",20095);
-//        jedis.auth("kkb@123.");
-        jedis = new Jedis("****",20095);
-        jedis.auth("*****");
+        jedis = new Jedis("devkmos-inner.kaikeba.com",20095);
+        jedis.auth("kkb@123.");
+//        jedis = new Jedis("****",20095);
+//        jedis.auth("*****");
     }
     public static String parse(String str) {
         String rs = "";
