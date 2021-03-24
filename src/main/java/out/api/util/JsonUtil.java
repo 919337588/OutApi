@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Map;
 
 /**
  * JOSN工具
@@ -68,4 +69,12 @@ public class JsonUtil {
 			return null;
 		}
 	}
+    public static <K, V> Map<K, V> toMap(String json) {
+        try {
+            return objectMapper.readValue(json, new TypeReference<Map<K, V>>() {
+            });
+        } catch (IOException e) {
+            return null;
+        }
+    }
 }

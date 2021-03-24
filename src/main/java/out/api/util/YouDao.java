@@ -21,8 +21,10 @@ public class YouDao {
     public static HashMap<String, String> map=new HashMap<>();
     static Jedis jedis ;
     static {
-        jedis = new Jedis("devkmos-inner.kaikeba.com",20095);
-        jedis.auth("kkb@123.");
+//        jedis = new Jedis("devkmos-inner.kaikeba.com",20095);
+//        jedis.auth("kkb@123.");
+        jedis = new Jedis("****",20095);
+        jedis.auth("*****");
     }
     public static String parse(String str) {
         String rs = "";
@@ -63,7 +65,7 @@ public class YouDao {
             builder.append(line);
         }
         s=builder.toString();
-        Map<Object, Object> objectObjectMap =toMap(s);
+        Map<Object, Object> objectObjectMap =JsonUtil.toMap(s);
         Object translateResult1 = objectObjectMap.get("translateResult");
         if(translateResult1!=null){
             List<Object> translateResult = (List<Object>)translateResult1;
@@ -78,12 +80,5 @@ public class YouDao {
         jedis.set("youdao_" + val,s);
         return s;
     }
-    public static <K, V> Map<K, V> toMap(String json) {
-        try {
-            return objectMapper.readValue(json, new TypeReference<Map<K, V>>() {
-            });
-        } catch (IOException e) {
-            return null;
-        }
-    }
+
 }
