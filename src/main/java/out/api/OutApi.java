@@ -1,5 +1,6 @@
 package out.api;
 
+import org.springframework.util.StringUtils;
 import out.api.util.ClassHelper;
 import out.api.util.ObjMapBeanUtil;
 import out.api.util.YouDao;
@@ -19,9 +20,8 @@ public class OutApi {
     private static String bao = "cn.deal";
 
 
-
     public static List<ControlMethon> outapi(String bao) {
-        OutApi.bao=bao;
+        OutApi.bao = bao;
         return ClassHelper.getClzFromPkg(bao).stream().filter(
                 v -> v.getAnnotation(RestController.class) != null || v.getAnnotation(Controller.class) != null
         ).flatMap(v ->
@@ -56,9 +56,9 @@ public class OutApi {
             if (inFOAll == null) {
                 return null;
             }
-            String[] inFO=inFOAll[0];
+            String[] inFO = inFOAll[0];
             controlMethon.type = inFO[0];
-            controlMethon.consumes=inFOAll[1];
+            controlMethon.consumes = inFOAll[1];
             if (path.endsWith("/") && inFO[1].startsWith("/")) {
                 controlMethon.path = path + inFO[1].substring(1);
             } else if (!path.endsWith("/") && !inFO[1].startsWith("/")) {
@@ -92,39 +92,21 @@ public class OutApi {
                     RequestParam requestParam = parameters[i].getAnnotation(RequestParam.class);
                     PathVariable pathVariable = parameters[i].getAnnotation(PathVariable.class);
                     if (requestParam != null) {
-                        String name = requestParam.name();
-                        name = name == null || "".equals(name.trim()) ? requestParam.value() : name;
-                        name = name == null || "".equals(name.trim()) ? parameters[i].getName() : name;
-                        String nameC = apiImplicitParamMap.get(name);
-                        nameC = nameC == null || "".equals(nameC.trim()) ? YouDao.execCurl(name) : nameC;
-                        name = name + "~~" + nameC;
-                        HashMap<Object, Object> objectObjectHashMap = new HashMap<>();
-                        objectObjectHashMap.put(name, parameterTypes[i].getName());
-                        from.add(objectObjectHashMap);
+                        String name = getName(requestParam.name(), requestParam.value(), parameters[i].getName());
+                        String nameC = getName(apiImplicitParamMap.get(name), YouDao.execCurl(name));
+                        listAddParameter(from, name + "~~" + nameC, parameterTypes[i].getName());
                     } else if (pathVariable != null) {
-                        String name = pathVariable.name();
-                        name = name == null || "".equals(name.trim()) ? pathVariable.value() : name;
-                        name = name == null || "".equals(name.trim()) ? parameters[i].getName() : name;
-                        String nameC = apiImplicitParamMap.get(name);
-                        nameC = nameC == null || "".equals(nameC.trim()) ? YouDao.execCurl(name) : nameC;
-                        name = name + "~~" + nameC;
-                        HashMap<Object, Object> objectObjectHashMap = new HashMap<>();
-                        objectObjectHashMap.put(name, parameterTypes[i].getName());
-                        pathVal.add(objectObjectHashMap);
+                        String name = getName(pathVariable.name(), pathVariable.value(), parameters[i].getName());
+                        String nameC = getName(apiImplicitParamMap.get(name), YouDao.execCurl(name));
+                        listAddParameter(pathVal, name + "~~" + nameC, parameterTypes[i].getName());
                     } else if (parameterTypes[i].getName().indexOf(bao) > -1) {
                         Set<Field> allFieldsList = ObjMapBeanUtil.getAllFields(parameterTypes[i]);
                         for (Field o1 : allFieldsList) {
                             ApiModelProperty[] annotationsByType = o1.getAnnotationsByType(ApiModelProperty.class);
-                            String nameC = null;
-                            if (annotationsByType.length > 0) {
-                                nameC = annotationsByType[0].name();
-                                nameC = nameC == null || "".equals(nameC.trim()) ? annotationsByType[0].value() : nameC;
-                            }
-                            nameC = nameC == null || "".equals(nameC.trim()) ? apiImplicitParamMap.get(o1.getName()) : nameC;
-                            nameC = nameC == null || "".equals(nameC.trim()) ? YouDao.execCurl(o1.getName()) : nameC;
-                            HashMap<Object, Object> objectObjectHashMap = new HashMap<>();
-                            objectObjectHashMap.put(o1.getName() + "~~" + nameC, parameterTypes[i].getName());
-                            from.add(objectObjectHashMap);
+                            String nameC = annotationsByType.length > 0 ?
+                                    getName(annotationsByType[0].name(), annotationsByType[0].value(), apiImplicitParamMap.get(o1.getName()), YouDao.execCurl(o1.getName()))
+                                    : getName(apiImplicitParamMap.get(o1.getName()), YouDao.execCurl(o1.getName()));
+                            listAddParameter(from, o1.getName() + "~~" + nameC, parameterTypes[i].getName());
                         }
                     }
                 }
@@ -157,12 +139,9 @@ public class OutApi {
             Set<Field> allFieldsList = ObjMapBeanUtil.getAllFields(type);
             for (Field o1 : allFieldsList) {
                 ApiModelProperty[] annotationsByType = o1.getAnnotationsByType(ApiModelProperty.class);
-                String nameC = null;
-                if (annotationsByType.length > 0) {
-                    nameC = annotationsByType[0].name();
-                    nameC = nameC == null || "".equals(nameC.trim()) ? annotationsByType[0].value() : nameC;
-                }
-                nameC = nameC == null || "".equals(nameC.trim()) ? YouDao.execCurl(o1.getName()) : nameC;
+                String nameC = annotationsByType.length > 0?
+                        getName( annotationsByType[0].name(), annotationsByType[0].value(),YouDao.execCurl(o1.getName()))
+                        :YouDao.execCurl(o1.getName());
                 ((Map) o).put(o1.getName() + "~~" + nameC, parseRequertbody(o1.getType(), o1.getGenericType()));
             }
         } else if (type.isInstance(new ArrayList<>()) || type.isInstance(new HashSet<>())) {
@@ -172,11 +151,11 @@ public class OutApi {
                 if (type1 instanceof ParameterizedType) {
                     Type[] actualTypeArguments = ((ParameterizedType) type1).getActualTypeArguments();
                     for (Type type2 : actualTypeArguments) {
-                       try {
-                           ((List) o).add(parseRequertbody(Class.forName(type2.getTypeName()), type2));
-                       }catch (Exception e){
-                           ((List) o).add(type2.getTypeName());
-                       }
+                        try {
+                            ((List) o).add(parseRequertbody(Class.forName(type2.getTypeName()), type2));
+                        } catch (Exception e) {
+                            ((List) o).add(type2.getTypeName());
+                        }
                     }
                 }
             }
@@ -189,10 +168,27 @@ public class OutApi {
         return o;
     }
 
+    public static String getName(String... names) {
+        String name = "";
+        for (String s : names) {
+            name = s;
+            if (name != null && !"".equals(name.trim())) {
+                break;
+            }
+        }
+        return name;
+    }
+
+    public static void listAddParameter(List list, String name, String val) {
+        HashMap<Object, Object> objectObjectHashMap = new HashMap<>();
+        objectObjectHashMap.put(name, val);
+        list.add(objectObjectHashMap);
+    }
+
 
     public static String[][] getInFO(Method method) throws Exception {
         String path = "", type = "";
-        String[] cus=new String[0];
+        String[] cus = new String[0];
         PostMapping postMapping = method.getAnnotation(PostMapping.class);
         PutMapping putMapping = method.getAnnotation(PutMapping.class);
         GetMapping getMapping = method.getAnnotation(GetMapping.class);
@@ -201,22 +197,22 @@ public class OutApi {
         if (postMapping != null) {
             path = getPath(postMapping);
             type = "POST";
-            cus=postMapping.consumes();
+            cus = postMapping.consumes();
         } else if (putMapping != null) {
             path = getPath(putMapping);
             type = "PUT";
-            cus=putMapping.consumes();
+            cus = putMapping.consumes();
         } else if (getMapping != null) {
             path = getPath(getMapping);
             type = "GET";
-            cus=getMapping.consumes();
+            cus = getMapping.consumes();
         } else if (deleteMapping != null) {
             path = getPath(deleteMapping);
             type = "DELETE";
-            cus=deleteMapping.consumes();
+            cus = deleteMapping.consumes();
         } else if (requestMapping != null) {
             path = getPath(requestMapping);
-            cus=requestMapping.consumes();
+            cus = requestMapping.consumes();
             RequestMethod[] method1 = requestMapping.method();
             if (method1 == null || method1.length == 0) {
                 type = "ALL";
@@ -230,7 +226,7 @@ public class OutApi {
             return null;
         }
 
-        return new String[][]{{type, path},cus};
+        return new String[][]{{type, path}, cus};
     }
 
     public static String getPath(Object obj) throws Exception {
