@@ -11,8 +11,8 @@ import out.api.test.dto.TestBean;
 @RestController
 @RequestMapping("api/v1.0/")
 public class TestResource {
-    @RequestMapping(method = RequestMethod.POST,value = "out/{id}/test")
-    public TestBean test(@RequestParam(value = "parameter—one")String one, String two, @PathVariable("id") String id){
+    @RequestMapping(method = RequestMethod.POST,value = "out/{execution_time}/test")
+    public TestBean test(@RequestParam(value = "parameter—one")String one, String two, @PathVariable("execution_time") String id){
     return  new TestBean();
     }
 
