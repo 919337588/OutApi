@@ -13,7 +13,7 @@ import redis.clients.jedis.Jedis;
 public class DefaultOutTest {
 
     public static void main(String[] args) {
-        //配置有道翻译缓存  防止频道调用被现在ip
+        //配置有道翻译缓存
         YouDao.jedis = new Jedis("devkmos-inner.kaikeba.com",20095);
         YouDao.jedis.auth("kkb@123.");
         System.out.println(JsonUtil.toJson(OutApi.outapi("out.api")));;
