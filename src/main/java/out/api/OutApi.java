@@ -123,7 +123,7 @@ public class OutApi {
         }
     }
 
-    static HashMap<Type, Object> parseMap = new HashMap<>();
+    public static HashMap<Type, Object> parseMap = new HashMap<>();
 
     public static Object parseRequertbody(Class type, Type type1) throws Exception {
         Object o = parseMap.get(type1);
