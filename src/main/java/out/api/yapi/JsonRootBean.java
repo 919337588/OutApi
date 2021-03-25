@@ -15,7 +15,7 @@ public class JsonRootBean {
 
     private String _id;
     private String method;
-    private String catid=  "NumberInt("+YapiMain.catid+")";
+    private String catid=  YapiMain.catid==null?null:"NumberInt("+YapiMain.catid+")";
     private String title;
     private String path;
     private String project_id;

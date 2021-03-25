@@ -13,10 +13,10 @@ import java.util.*;
 public class YapiMain {
 
 
-    public static long catid=1008;
-    public static long project_id=350;
-    public static long id_start=18520004;
-    public static long uid=468;
+    public static Long catid=null;
+    public static Long project_id=null;
+    public static Long id_start=null;
+    public static Long uid=null;
     public static void out(String bao) {
         for (OutApi.ControlMethon controlMethon : OutApi.outapi(bao)) {
             JsonRootBean jsonRootBean = new JsonRootBean();
