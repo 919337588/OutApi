@@ -19,13 +19,10 @@ import java.util.Map;
 public class YouDao {
     private static ObjectMapper objectMapper = new ObjectMapper();
     public static HashMap<String, String> map=new HashMap<>();
-    static Jedis jedis ;
-    static {
-        jedis = new Jedis("devkmos-inner.kaikeba.com",20095);
-        jedis.auth("kkb@123.");
-//        jedis = new Jedis("****",20095);
-//        jedis.auth("*****");
-    }
+    public static Jedis jedis ;
+
+
+
     public static String parse(String str) {
         String rs = "";
         if(str.indexOf("_")>-1||str.indexOf("-")>-1||str.indexOf("—")>-1){
@@ -48,10 +45,14 @@ public class YouDao {
 
     public static String execCurl(String val) throws IOException, InterruptedException {
         val=parse(val);
-        String s = jedis.get("youdao_" + val);
-        if(s!=null&&!"".equals(s.trim())){
-            return s;
+        String s="";
+        if(jedis!=null){
+             s = jedis.get("youdao_" + val);
+            if(s!=null&&!"".equals(s.trim())){
+                return s;
+            }
         }
+
         String[] cmds = {"curl", "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i="+val
         };
 
@@ -77,7 +78,9 @@ public class YouDao {
                 }
             }
         }
-        jedis.set("youdao_" + val,s);
+       if(jedis!=null){
+           jedis.set("youdao_" + val,s);
+       }
         return s;
     }
 

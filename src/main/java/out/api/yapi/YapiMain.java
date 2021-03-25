@@ -17,8 +17,8 @@ public class YapiMain {
     public static long project_id=350;
     public static long id_start=18520004;
     public static long uid=468;
-    public static void out() {
-        for (OutApi.ControlMethon controlMethon : OutApi.outapi("cn.kuick")) {
+    public static void out(String bao) {
+        for (OutApi.ControlMethon controlMethon : OutApi.outapi(bao)) {
             JsonRootBean jsonRootBean = new JsonRootBean();
             jsonRootBean.setPath(controlMethon.path);
             jsonRootBean.setProject_id("NumberInt("+project_id+")");

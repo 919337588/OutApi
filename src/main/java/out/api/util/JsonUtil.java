@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -22,7 +20,6 @@ import java.util.Map;
  */
 public class JsonUtil {
 
-    private static final Logger log = LoggerFactory.getLogger(JsonUtil.class);
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -37,7 +34,7 @@ public class JsonUtil {
         try {
 			return objectMapper.writeValueAsString(src);
 		} catch (JsonProcessingException e) {
-			log.error("error in toJson:" + src, e);
+            e.printStackTrace();
 			return null;
 		}
     }
@@ -58,14 +55,13 @@ public class JsonUtil {
 
 	public static <T> T fromJson(String json, TypeReference<T> typeOfT) {
 		if (StringUtils.isEmpty(json)){
-            log.error("the json parameter should not be blank");
             throw new RuntimeException("the parameter should not be blank");
         }
 
 		try {
         	return objectMapper.readValue(json, typeOfT);
         } catch (IOException e) {
-			log.error("error in fromJson:" + json, e);
+			e.printStackTrace();
 			return null;
 		}
 	}
