@@ -4,12 +4,13 @@ web服务导出api文档
 
 现支持导出格式
 1:默认对象
-2：yapi数据库json话
+2：yapi数据库json化
 
-导出
-打包后在对应服务引入jar包
+导出教程
 
-如果是gradle编译运行
+1下载项目打包，然后在需要导出api的服务引入jar包
+
+2如果是gradle编译运行
 gradle 配置
 compileJava {
     options.compilerArgs << "-parameters"
@@ -19,7 +20,7 @@ compileJava {
 idea配置
 在运行 javac 配置  -parameters
 
-具体导出代码查看 out.api.test下案例
+3具体导出代码查看 out.api.test下案例
 
 
 
