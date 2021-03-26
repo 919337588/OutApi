@@ -23,5 +23,8 @@ public class YapiOutTest {
         //操作用户id
         YapiMain.uid= Long.valueOf(468);
         YapiMain.out("out.api");
+
+
+        //通过数据库链接工具链接yapi的数据库   将程序执行输出的json直接导入Yapi数据库即可
     }
 }
