@@ -44,7 +44,9 @@ public class OutApi {
 
     public static ControlMethon getRequestParameter(Method method) throws Exception {
         RequestMapping annotation = method.getDeclaringClass().getAnnotation(RequestMapping.class);
-        String path = annotation != null ? (annotation.value() != null && annotation.value().length > 0 ? annotation.value()[0] : annotation.name()) : "";
+        String path = annotation != null ? getPath(annotation): "";
+        path=StringUtils.isEmpty(path)?"":path;
+
         ControlMethon controlMethon = new ControlMethon();
         try {
             String[][] inFOAll = getInFO(method);
