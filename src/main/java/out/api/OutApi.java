@@ -24,24 +24,18 @@ public class OutApi {
         OutApi.bao = bao;
         return ClassHelper.getClzFromPkg(bao).stream().filter(
                 v -> v.getAnnotation(RestController.class) != null || v.getAnnotation(Controller.class) != null
-        ).flatMap(v ->
-                {
-                    Stream<Method> stream = Arrays.stream(v.getMethods());
-                    RequestMapping annotation = v.getAnnotation(RequestMapping.class);
-                    String path = annotation != null ? (annotation.value() != null && annotation.value().length > 0 ? annotation.value()[0] : annotation.name()) : "";
-                    return stream.map(j -> new Object[]{path, j});
-                }
+        ).flatMap(v -> Arrays.stream(v.getMethods())
         ).filter(
                 v ->
-                        ((Method) v[1]).getAnnotation(PostMapping.class) != null ||
-                                ((Method) v[1]).getAnnotation(GetMapping.class) != null ||
-                                ((Method) v[1]).getAnnotation(PutMapping.class) != null ||
-                                ((Method) v[1]).getAnnotation(DeleteMapping.class) != null ||
-                                ((Method) v[1]).getAnnotation(RequestMapping.class) != null
+                        v.getAnnotation(PostMapping.class) != null ||
+                                v.getAnnotation(GetMapping.class) != null ||
+                                v.getAnnotation(PutMapping.class) != null ||
+                                v.getAnnotation(DeleteMapping.class) != null ||
+                                v.getAnnotation(RequestMapping.class) != null
 
         ).map(v -> {
             try {
-                return getRequestParameter((Method) v[1], (String) v[0]);
+                return getRequestParameter(v);
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -49,7 +43,9 @@ public class OutApi {
         }).filter(v -> v != null).collect(Collectors.toList());
     }
 
-    public static ControlMethon getRequestParameter(Method method, String path) throws Exception {
+    public static ControlMethon getRequestParameter(Method method) throws Exception {
+        RequestMapping annotation = method.getDeclaringClass().getAnnotation(RequestMapping.class);
+        String path = annotation != null ? (annotation.value() != null && annotation.value().length > 0 ? annotation.value()[0] : annotation.name()) : "";
         ControlMethon controlMethon = new ControlMethon();
         try {
             String[][] inFOAll = getInFO(method);
@@ -139,9 +135,9 @@ public class OutApi {
             Set<Field> allFieldsList = ObjMapBeanUtil.getAllFields(type);
             for (Field o1 : allFieldsList) {
                 ApiModelProperty[] annotationsByType = o1.getAnnotationsByType(ApiModelProperty.class);
-                String nameC = annotationsByType.length > 0?
-                        getName( annotationsByType[0].name(), annotationsByType[0].value(),YouDao.execCurl(o1.getName()))
-                        :YouDao.execCurl(o1.getName());
+                String nameC = annotationsByType.length > 0 ?
+                        getName(annotationsByType[0].name(), annotationsByType[0].value(), YouDao.execCurl(o1.getName()))
+                        : YouDao.execCurl(o1.getName());
                 ((Map) o).put(o1.getName() + "~~" + nameC, parseRequertbody(o1.getType(), o1.getGenericType()));
             }
         } else if (type.isInstance(new ArrayList<>()) || type.isInstance(new HashSet<>())) {

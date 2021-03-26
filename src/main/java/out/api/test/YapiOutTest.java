@@ -14,7 +14,7 @@ public class YapiOutTest {
         //配置有道翻译缓存
         YouDao.jedis = new Jedis("devkmos-inner.kaikeba.com",20095);
         YouDao.jedis.auth("kkb@123.");
-        //？？？未知id,应该是项目下子目录的id
+        //项目下子目录的id
         YapiMain.catid= Long.valueOf(1008);
         //yapi项目id
         YapiMain.project_id= Long.valueOf(350);
