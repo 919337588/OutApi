@@ -12,7 +12,7 @@ import out.api.test.dto.TestBean;
 @RequestMapping("api/v1.0/")
 public class TestResource {
     @RequestMapping(method = RequestMethod.POST,value = "out/{execution_time}/test")
-    public TestBean test(@RequestParam(value = "parameter—one")String one, String two, @PathVariable("execution_time") String id){
+    public TestBean test(@RequestParam(value = "parameterOne")String one, String two, @PathVariable("execution_time") String id){
     return  new TestBean();
     }
 
