@@ -10,7 +10,7 @@ import redis.clients.jedis.Jedis;
  * @date 2021/3/25 3:56 下午
  */
 public class YapiOutTest {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         //配置有道翻译缓存
         YouDao.jedis = new Jedis("devkmos-inner.kaikeba.com",20095);
         YouDao.jedis.auth("kkb@123.");

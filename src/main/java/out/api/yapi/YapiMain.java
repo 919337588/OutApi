@@ -17,7 +17,7 @@ public class YapiMain {
     public static Long project_id=null;
     public static Long id_start=null;
     public static Long uid=null;
-    public static void out(String bao) {
+    public static void out(String bao) throws Exception {
         for (OutApi.ControlMethon controlMethon : OutApi.outapi(bao)) {
             JsonRootBean jsonRootBean = new JsonRootBean();
             jsonRootBean.setPath(controlMethon.path);

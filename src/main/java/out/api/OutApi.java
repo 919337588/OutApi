@@ -20,27 +20,26 @@ public class OutApi {
     private static String bao = "cn.deal";
 
 
-    public static List<ControlMethon> outapi(String bao) {
+    public static List<ControlMethon> outapi(String bao) throws Exception {
         OutApi.bao = bao;
-        return ClassHelper.getClzFromPkg(bao).stream().filter(
-                v -> v.getAnnotation(RestController.class) != null || v.getAnnotation(Controller.class) != null
-        ).flatMap(v -> Arrays.stream(v.getMethods())
-        ).filter(
-                v ->
-                        v.getAnnotation(PostMapping.class) != null ||
-                                v.getAnnotation(GetMapping.class) != null ||
-                                v.getAnnotation(PutMapping.class) != null ||
-                                v.getAnnotation(DeleteMapping.class) != null ||
-                                v.getAnnotation(RequestMapping.class) != null
-
-        ).map(v -> {
-            try {
-                return getRequestParameter(v);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
+        List<ControlMethon> controlMethons = new ArrayList<>();
+        for (Class<?> v : ClassHelper.getClzFromPkg(bao)) {
+            if (v.getAnnotation(RestController.class) != null || v.getAnnotation(Controller.class) != null) {
+                for (Method method : v.getMethods()) {
+                    if (method.getAnnotation(PostMapping.class) != null ||
+                            method.getAnnotation(GetMapping.class) != null ||
+                            method.getAnnotation(PutMapping.class) != null ||
+                            method.getAnnotation(DeleteMapping.class) != null ||
+                            method.getAnnotation(RequestMapping.class) != null) {
+                        ControlMethon requestParameter = getRequestParameter(method);
+                        if (requestParameter != null) {
+                            controlMethons.add(requestParameter);
+                        }
+                    }
+                }
             }
-        }).filter(v -> v != null).collect(Collectors.toList());
+        }
+        return controlMethons;
     }
 
     public static ControlMethon getRequestParameter(Method method) throws Exception {
