@@ -17,8 +17,7 @@ public class Params {
     private String example;
     private String name;
     Params(){
-        _id="ObjectId(\""+ UUID.randomUUID().toString().replace("-","").toLowerCase().substring(0,24)+"\")" ;
-
+        _id=UUID.randomUUID().toString().replace("-","").toLowerCase().substring(0,24) ;
     }
     public void set_id(String _id) {
         this._id = _id;

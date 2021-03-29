@@ -18,7 +18,7 @@ public class Req_headers {
     private String value;
     private String name;
     Req_headers(){
-        _id="ObjectId(\""+ UUID.randomUUID().toString().replace("-","").toLowerCase().substring(0,24)+"\")" ;
+        _id= UUID.randomUUID().toString().replace("-","").toLowerCase().substring(0,24) ;
 
     }
     public void setRequired(String required) {

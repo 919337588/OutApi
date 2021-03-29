@@ -15,8 +15,8 @@ public class DefaultOutTest {
 
     public static void main(String[] args) throws Exception {
         //配置有道翻译缓存
-        YouDao.jedis = new Jedis("devkmos-inner.kaikeba.com",20095);
-        YouDao.jedis.auth("kkb@123.");
+        YouDao.jedis = new Jedis("xxxxxxx",111);
+        YouDao.jedis.auth("xxxx");
         System.out.println(JsonUtil.toJson(OutApi.outapi("out.api")));
         System.out.println(JsonUtil.toJson(OutApi.parseMap));;
 

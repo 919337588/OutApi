@@ -1,5 +1,6 @@
 package out.api.test;
 
+import out.api.util.MongoDBUtil;
 import out.api.util.YouDao;
 import out.api.yapi.YapiMain;
 import redis.clients.jedis.Jedis;
@@ -11,20 +12,13 @@ import redis.clients.jedis.Jedis;
  */
 public class YapiOutTest {
     public static void main(String[] args) throws Exception {
-        //配置有道翻译缓存
-        YouDao.jedis = new Jedis("devkmos-inner.kaikeba.com",20095);
-        YouDao.jedis.auth("kkb@123.");
-        //项目下子目录的id
-        YapiMain.catid= Long.valueOf(1008);
-        //yapi项目id
-        YapiMain.project_id= Long.valueOf(350);
-        //主键id起始值
-        YapiMain.id_start= Long.valueOf(18520004);
-        //操作用户id
-        YapiMain.uid= Long.valueOf(468);
-        YapiMain.out("out.api");
 
 
-        //通过数据库链接工具链接yapi的数据库   将程序执行输出的json直接导入Yapi数据库即可
+        //配置有道翻译的redis缓存  如果不配置缓存  可能会被有道封ip
+        YouDao.jedis = new Jedis("xxxxxxxx",1111);
+        YouDao.jedis.auth("xxxxxx");
+
+        YapiMain.out("out.api","OutApi测试","outApi导出的api","xxxxxx",1111);
+
     }
 }

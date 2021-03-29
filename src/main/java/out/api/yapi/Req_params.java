@@ -17,7 +17,7 @@ public class Req_params {
     private String desc="";
     private String name;
     Req_params(){
-        _id="ObjectId(\""+ UUID.randomUUID().toString().replace("-","").toLowerCase().substring(0,24)+"\")" ;
+        _id=UUID.randomUUID().toString().replace("-","").toLowerCase().substring(0,24);
 
     }
     public void set_id(String _id) {
