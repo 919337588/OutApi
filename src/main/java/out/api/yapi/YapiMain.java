@@ -158,8 +158,8 @@ public class YapiMain {
         yapi = MongoDBUtil.getMongoClient().getDatabase("yapi");
         Document projectDocument = initProject(projectName);
         project_id = Long.valueOf(projectDocument.get("_id").toString());
-        uid = Long.valueOf(projectDocument.get("uid").toString());
         Document catDocument = initCat(project_id, catName);
+        uid = Long.valueOf(catDocument.get("uid").toString());
         catid = Long.valueOf(catDocument.get("_id").toString());
         id_start = project_id * 10000;
         Long maxId = getMaxId(project_id) + 1;
@@ -204,7 +204,7 @@ public class YapiMain {
         MongoCursor cursor = findIterable.iterator();
         while (cursor.hasNext()) {
             if (document != null) {
-                throw new Exception("名称重复");
+                throw new Exception("projectName名称存在多个服务");
             }
             document = (Document) cursor.next();
         }
