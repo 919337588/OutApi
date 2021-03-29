@@ -17,11 +17,8 @@ import java.util.Map;
  * @date 2021/3/12 4:19 下午
  */
 public class YouDao {
-    private static ObjectMapper objectMapper = new ObjectMapper();
-    public static HashMap<String, String> map=new HashMap<>();
+    private static HashMap<String, String> map=new HashMap<>();
     public static Jedis jedis ;
-
-
 
     public static String parse(String str) {
         String rs = "";
@@ -48,6 +45,11 @@ public class YouDao {
         String s="";
         if(jedis!=null){
              s = jedis.get("youdao_" + val);
+            if(s!=null&&!"".equals(s.trim())){
+                return s;
+            }
+        }else{
+            s = map.get(val);
             if(s!=null&&!"".equals(s.trim())){
                 return s;
             }
@@ -81,6 +83,7 @@ public class YouDao {
        if(jedis!=null){
            jedis.set("youdao_" + val,s);
        }
+        map.put(val,s);
         return s;
     }
 
