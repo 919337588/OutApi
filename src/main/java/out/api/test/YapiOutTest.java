@@ -15,10 +15,10 @@ public class YapiOutTest {
 
 
         //配置有道翻译的redis缓存  如果不配置缓存  可能会被有道封ip
-        YouDao.jedis = new Jedis("devkmos-inner.kaikeba.com",20095);
-        YouDao.jedis.auth("kkb@123.");
+        YouDao.jedis = new Jedis("xxxxxxxx",1111);
+        YouDao.jedis.auth("xxxxxx");
 
-        YapiMain.out("out.api","OutApi测试","outApi导出的api","192.168.100.31",10000);
+        YapiMain.out("out.api","OutApi测试","outApi导出的api","xxxxxx",1111);
 
     }
 }
